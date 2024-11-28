@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from 'react-router-dom';
 
-function Login() {
-  const [role, setRole] = useState("employee"); // Default role
+function Login({ role: initialRole }) {
+  const [role, setRole] = useState(initialRole || "employee"); // Default role is employee
   const [userId, setUserId] = useState(""); // For manager ID or employee ID
   const [password, setPassword] = useState(""); // Password input
   const [error, setError] = useState(""); // Error state
   const [success, setSuccess] = useState(""); // Success state
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-    setError(""); // Clear any error when switching roles
-    setSuccess(""); // Clear success when switching roles
-  };
+  const location = useLocation();
+
+  // Update role when navigating directly to the page
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes("manager")) {
+      setRole("manager");
+    } else if (path.includes("employee")) {
+      setRole("employee");
+    }
+  }, [location]);
 
   const handleIdChange = (e) => {
     setUserId(e.target.value);
@@ -63,17 +70,10 @@ function Login() {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
+      <h2>{role === "manager" ? "Manager Login" : "Employee Login"}</h2>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="role">Select Role:</label>
-          <select id="role" value={role} onChange={handleRoleChange}>
-            <option value="employee">Employee</option>
-            <option value="manager">Manager</option>
-          </select>
-        </div>
         <div className="form-group">
           <label htmlFor="id">{role === "manager" ? "Manager ID" : "Employee ID"}:</label>
           <input

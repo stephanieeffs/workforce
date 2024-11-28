@@ -6,10 +6,10 @@ console.log(scheduleController);
 
 
 // Define routes
-router.get("/", verifyManagerLogin, scheduleController.getAllSchedules);
-router.get("/:id",verifyManagerLogin, scheduleController.viewSchedule); // DONE
+router.get("/view-all-schedules", verifyManagerLogin, scheduleController.getAllSchedules);
+router.get("/view-schedule/:id",verifyManagerLogin, scheduleController.viewSchedule); // DONE
 router.post("/create-schedule", verifyManagerLogin, scheduleController.createSchedule); // DONE
-router.put("/:id",verifyManagerLogin, scheduleController.editSchedule); // DONE
-router.delete("/:id",verifyManagerLogin, scheduleController.deleteSchedule); // DONE
+router.put("/edit-schedule/:id",verifyManagerLogin, scheduleController.editSchedule); // DONE
+router.delete("/delete-schedule/:id",verifyManagerLogin, scheduleController.deleteSchedule); // DONE
 
 module.exports = router;

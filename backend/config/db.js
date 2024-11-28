@@ -3,9 +3,9 @@ const mysql = require('mysql');
 // Create a connection to the MySQL database (MariaDB)
 const db = mysql.createConnection({
     host: 'localhost', // MySQL is running on the local machine
-    user: 'root',      // MySQL username (default is 'root')
-    password: '061502kp',  // New password you set for 'root'
-    database: 'attendance_system' // Replace with your actual database name
+    user: 'root',      // MySQL username 
+    password: '',  // 
+    database: 'attendance_system' 
 });
 
 db.connect((err) => {
