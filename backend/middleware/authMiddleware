@@ -1,0 +1,65 @@
+const db = require('../config/db');
+
+// Middleware function to verify manager login
+exports.verifyManagerLogin = (req, res, next) => {
+    const { manager_id, password } = req.headers;
+
+    if (!manager_id || !password) {
+        return res.status(401).json({ error: 'Authentication required: Missing credentials.' });
+    }
+
+    // Verify credentials (Example database check)
+    db.query('SELECT * FROM managers WHERE manager_id = ? AND password = ?', [manager_id, password], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error while verifying credentials.' });
+        }
+
+        if (results.length === 0) {
+            return res.status(403).json({ error: 'Invalid manager credentials.' });
+        }
+
+        const user = results[0];
+
+        // Check if the user is indeed a manager
+        if (user.role !== 'manager') {
+            return res.status(403).json({ error: 'Access denied. You do not have manager privileges.' });
+        }
+
+        // If credentials are valid and role is manager, proceed to the next function
+        next();
+    });
+};
+
+// Middleware function to verify employee login
+exports.verifyEmployeeLogin = (req, res, next) => {
+    const { employee_id, password } = req.headers;
+
+    if (!employee_id || !password) {
+        return res.status(401).json({ error: 'Authentication required: Missing credentials.' });
+    }
+
+    // Verify credentials (Example database check)
+    db.query('SELECT * FROM employees WHERE employee_id = ? AND password = ?', [employee_id, password], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error while verifying credentials.' });
+        }
+
+        if (results.length === 0) {
+            return res.status(403).json({ error: 'Invalid employee credentials.' });
+        }
+
+        const user = results[0];
+
+        // If credentials are valid, proceed to the next function
+        next();
+    });
+};
+
+
+// middleware/authMiddleware.js
+exports.ensureAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    return res.status(401).json({ error: 'You need to log in first.' });
+};

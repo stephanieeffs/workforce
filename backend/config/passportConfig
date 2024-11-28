@@ -1,0 +1,82 @@
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const db = require('../config/db'); // Your database connection configuration
+console.log('Passport local strategy configuration loaded.');
+
+// Passport local strategy for manager authentication
+passport.use('manager-local', new LocalStrategy({
+    usernameField: 'manager_id',
+    passwordField: 'password'
+}, (manager_id, password, done) => {
+    // Query to check manager credentials in the database
+    const query = 'SELECT * FROM managers WHERE manager_id = ? AND password = ?';
+    db.query(query, [manager_id, password], (err, results) => {
+        if (err) {
+            return done(err);
+        }
+        if (results.length === 0) {
+            return done(null, false, { message: 'Invalid manager credentials.' });
+        }
+
+        const user = results[0];
+        return done(null, user);
+    });
+}));
+
+passport.use('employee-local', new LocalStrategy({
+    usernameField: 'employee_id',
+    passwordField: 'password'
+}, (employee_id, password, done) => {
+    console.log(`Authenticating employee with ID: ${employee_id} and password: ${password}`);
+    const query = 'SELECT * FROM employees WHERE employee_id = ? AND password = ?';
+    db.query(query, [employee_id, password], (err, results) => {
+        if (err) {
+            console.error('Database error during employee authentication:', err);
+            return done(err);
+        }
+        if (results.length === 0) {
+            console.warn('No employee found with these credentials.');
+            return done(null, false, { message: 'Invalid employee credentials.' });
+        }
+
+        const user = results[0];
+        console.log(`Employee authenticated successfully: ${user.employee_id}`);
+        return done(null, user);
+    });
+}));
+
+// Serialize user to store user information in session
+passport.serializeUser((user, done) => {
+    done(null, user.manager_id || user.employee_id);
+});
+
+passport.deserializeUser((id, done) => {
+    console.log(`Deserializing user with ID: ${id}`);
+    // Query for both managers and employees to handle deserialization
+    const query = `
+        SELECT 'manager' AS role, manager_id AS id, employee_name, password FROM managers WHERE manager_id = ?
+        UNION
+        SELECT 'employee' AS role, employee_id AS id, employee_name, password FROM employees WHERE employee_id = ?`;
+
+    db.query(query, [id, id], (err, results) => {
+        if (err) {
+            console.error('Error during deserialization:', err);
+            return done(err);
+        }
+        if (results.length === 0) {
+            console.warn('No user found during deserialization.');
+            return done(null, false);
+        }
+        const user = results[0];
+        if (user.role === 'manager') {
+            user.manager_id = user.id;
+        } else if (user.role === 'employee') {
+            user.employee_id = user.id;
+        }
+        delete user.id;
+        done(null, user);
+    });
+});
+
+module.exports = passport;
+

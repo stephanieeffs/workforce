@@ -1,0 +1,67 @@
+const express = require('express');
+const passport = require('passport');
+const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+console.log(authMiddleware);
+
+// Login route for managers
+router.post('/login/manager', passport.authenticate('manager-local', {
+    successRedirect: '/api/manager/dashboard', // Redirect on successful login
+    failureRedirect: '/api/manager/login-failure', // Redirect on failure
+    failureMessage: true
+}));
+
+// Login route for employees
+router.post('/login/employee', passport.authenticate('employee-local', {
+    successRedirect: '/api/employee/dashboard', // Redirect on successful login
+    failureRedirect: '/api/employee/login-failure', // Redirect on failure
+    failureMessage: true
+}));
+
+
+// Example protected route to indicate manager login success
+router.get('/manager/dashboard', (req, res) => {
+    if (!req.isAuthenticated() || req.user.manager_id == null) {
+        return res.status(401).json({ error: 'You need to log in as a manager first.' });
+    }
+    res.status(200).json({ message: 'Welcome to the manager dashboard.' });
+});
+
+// Example protected route to indicate employee login success
+router.get('/employee/dashboard', (req, res) => {
+    console.log('Checking employee authentication...');
+    console.log('Is Authenticated:', req.isAuthenticated());
+    console.log('User:', req.user);
+    
+    if (!req.isAuthenticated() || !req.user.employee_id) {
+        console.warn('Access denied. Employee not authenticated.');
+        return res.status(401).json({ error: 'You need to log in as an employee first.' });
+    }
+    
+    console.log('Employee authenticated successfully.');
+    res.status(200).json({ message: 'Welcome to the employee dashboard.' });
+});
+
+// Example failure routes to indicate login failure
+router.get('/manager/login-failure', (req, res) => {
+    res.status(401).json({ error: 'Invalid manager credentials.' });
+});
+
+router.get('/employee/login-failure', (req, res) => {
+    res.status(401).json({ error: 'Invalid employee credentials.' });
+});
+
+// Logout route
+router.get('/logout', (req, res) => {
+    req.logout(function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to log out.' });
+        }
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid'); // Remove the session cookie
+            res.status(200).json({ message: 'Logged out successfully.' });
+        });
+    });
+});
+
+module.exports = router;
