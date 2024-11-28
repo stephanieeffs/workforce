@@ -1,25 +1,11 @@
 // authRoutes.js
 const express = require('express');
-const passport = require('passport');
 const router = express.Router();
 const loginController = require('../controllers/loginController');
-const { verifyManagerLogin, verifyEmployeeLogin } = require('../middleware/authMiddleware');
 
-// Login Routes
-
-// Manager login using passport authentication
-router.post('/login/manager', passport.authenticate('manager-local', {
-    successRedirect: '/api/manager/dashboard', // Redirect on successful login
-    failureRedirect: '/api/login-failure/manager', // Redirect on failure
-    failureMessage: true
-}));
-
-// Employee login using passport authentication
-router.post('/login/employee', passport.authenticate('employee-local', {
-    successRedirect: '/api/employee/dashboard', // Redirect on successful login
-    failureRedirect: '/api/login-failure/employee', // Redirect on failure
-    failureMessage: true
-}));
+// Login Routes using loginController
+router.post('/login/manager', loginController.managerLogin);
+router.post('/login/employee', loginController.employeeLogin);
 
 // Logout route shared for both employees and managers
 router.post('/logout', loginController.logout);
@@ -37,6 +23,7 @@ router.get('/login-failure/:role', (req, res) => {
 });
 
 // Protected Routes
+const { verifyManagerLogin, verifyEmployeeLogin } = require('../middleware/authMiddleware');
 
 // Dashboard for managers (accessible only after login)
 router.get('/manager/dashboard', verifyManagerLogin, (req, res) => {

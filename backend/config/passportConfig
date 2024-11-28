@@ -8,7 +8,6 @@ passport.use('manager-local', new LocalStrategy({
     usernameField: 'manager_id',
     passwordField: 'password'
 }, (manager_id, password, done) => {
-    // Query to check manager credentials in the database
     const query = 'SELECT * FROM managers WHERE manager_id = ? AND password = ?';
     db.query(query, [manager_id, password], (err, results) => {
         if (err) {
@@ -19,10 +18,12 @@ passport.use('manager-local', new LocalStrategy({
         }
 
         const user = results[0];
+        user.role = 'manager'; // Add role to user object
         return done(null, user);
     });
 }));
 
+// Passport local strategy for employee authentication
 passport.use('employee-local', new LocalStrategy({
     usernameField: 'employee_id',
     passwordField: 'password'
@@ -40,6 +41,7 @@ passport.use('employee-local', new LocalStrategy({
         }
 
         const user = results[0];
+        user.role = 'employee'; // Add role to user object
         console.log(`Employee authenticated successfully: ${user.employee_id}`);
         return done(null, user);
     });
@@ -47,18 +49,24 @@ passport.use('employee-local', new LocalStrategy({
 
 // Serialize user to store user information in session
 passport.serializeUser((user, done) => {
-    done(null, user.manager_id || user.employee_id);
+    done(null, { id: user.manager_id || user.employee_id, role: user.role });
 });
 
-passport.deserializeUser((id, done) => {
-    console.log(`Deserializing user with ID: ${id}`);
-    // Query for both managers and employees to handle deserialization
-    const query = `
-        SELECT 'manager' AS role, manager_id AS id, employee_name, password FROM managers WHERE manager_id = ?
-        UNION
-        SELECT 'employee' AS role, employee_id AS id, employee_name, password FROM employees WHERE employee_id = ?`;
+// Deserialize user from session
+passport.deserializeUser((obj, done) => {
+    const { id, role } = obj;
+    console.log(`Deserializing user with ID: ${id} and Role: ${role}`);
 
-    db.query(query, [id, id], (err, results) => {
+    let query = '';
+    if (role === 'manager') {
+        query = 'SELECT * FROM managers WHERE manager_id = ?';
+    } else if (role === 'employee') {
+        query = 'SELECT * FROM employees WHERE employee_id = ?';
+    } else {
+        return done(new Error('Invalid role specified.'));
+    }
+
+    db.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error during deserialization:', err);
             return done(err);
@@ -67,16 +75,11 @@ passport.deserializeUser((id, done) => {
             console.warn('No user found during deserialization.');
             return done(null, false);
         }
+
         const user = results[0];
-        if (user.role === 'manager') {
-            user.manager_id = user.id;
-        } else if (user.role === 'employee') {
-            user.employee_id = user.id;
-        }
-        delete user.id;
+        user.role = role;
         done(null, user);
     });
 });
 
 module.exports = passport;
-

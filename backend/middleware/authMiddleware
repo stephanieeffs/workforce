@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // Middleware function to verify manager login
 exports.verifyManagerLogin = (req, res, next) => {
-    const { manager_id, password } = req.headers;
+    const { manager_id, password } = req.body;
 
     if (!manager_id || !password) {
         return res.status(401).json({ error: 'Authentication required: Missing credentials.' });
@@ -32,7 +32,7 @@ exports.verifyManagerLogin = (req, res, next) => {
 
 // Middleware function to verify employee login
 exports.verifyEmployeeLogin = (req, res, next) => {
-    const { employee_id, password } = req.headers;
+    const { employee_id, password } = req.body;
 
     if (!employee_id || !password) {
         return res.status(401).json({ error: 'Authentication required: Missing credentials.' });

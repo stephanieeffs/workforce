@@ -1,0 +1,36 @@
+// loginRoutes.js
+const express = require('express');
+const passport = require('passport');
+const router = express.Router();
+const loginController = require('../controllers/loginController');
+
+// Login route for managers (using passport authentication)
+router.post('/login/manager', passport.authenticate('manager-local', {
+    successRedirect: '/api/manager/dashboard', // Redirect on successful login
+    failureRedirect: '/api/login-failure/manager', // Redirect on failure
+    failureMessage: true
+}));
+
+// Login route for employees (using passport authentication)
+router.post('/login/employee', passport.authenticate('employee-local', {
+    successRedirect: '/api/employee/dashboard', // Redirect on successful login
+    failureRedirect: '/api/login-failure/employee', // Redirect on failure
+    failureMessage: true
+}));
+
+// Failure route for login failure (for both employees and managers)
+router.get('/login-failure/:role', (req, res) => {
+    const role = req.params.role;
+    if (role === 'manager') {
+        res.status(401).json({ error: 'Invalid manager credentials.' });
+    } else if (role === 'employee') {
+        res.status(401).json({ error: 'Invalid employee credentials.' });
+    } else {
+        res.status(400).json({ error: 'Unknown role specified.' });
+    }
+});
+
+// Logout route (shared for both employees and managers)
+router.post('/logout', loginController.logout);
+
+module.exports = router;
