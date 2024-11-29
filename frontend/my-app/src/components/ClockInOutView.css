@@ -1,0 +1,130 @@
+/* Global reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif; /* Clean modern font */
+  }
+  
+  /* Clock In/Out Screen Styling */
+  .clock-in-out-screen {
+    min-height: 100vh; /* Ensure the container always fills the screen */
+    display: flex;
+    flex-direction: column; /* Stacks the items vertically */
+    align-items: center; /* Centers content horizontally */
+    justify-content: center; /* Centers content vertically */
+    background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient background */
+    color: #fff;
+    padding: 20px; /* Adds some padding on mobile */
+  }
+  
+  /* Container for Clock In/Out form */
+  .clock-container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+    max-width: 400px;
+    width: 100%;
+    backdrop-filter: blur(10px); /* Adds a blur effect to background */
+  }
+  
+  /* Main title */
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    font-weight: 600; /* Slightly bolder text */
+  }
+  
+  /* Input field */
+  input[type="text"] {
+    padding: 12px 20px;
+    font-size: 1rem;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 25px;
+    border: 2px solid #fff; /* White border */
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
+  }
+  
+  /* Button group (horizontal layout) */
+  .button-group-horizontal {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Wraps buttons on smaller screens */
+  }
+  
+  /* Button styles */
+  button {
+    padding: 15px 25px;
+    font-size: 1rem;
+    border-radius: 50px; /* Rounded edges for modern look */
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    font-weight: bold;
+    background-color: #4CAF50; /* Green button */
+    color: white;
+  }
+  
+  button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Slight shadow on hover */
+  }
+  
+  /* Response messages */
+  .response-message {
+    font-size: 1rem;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  /* Success message */
+  .response-message.success {
+    color: #4CAF50; /* Green */
+  }
+  
+  /* Error message */
+  .response-message.error {
+    color: #f44336; /* Red */
+  }
+  
+  /* Responsive design for mobile */
+  @media (max-width: 768px) {
+    .clock-container {
+      padding: 30px;
+    }
+  
+    h1 {
+      font-size: 1.8rem;
+    }
+  
+    input[type="text"] {
+      padding: 10px 15px;
+      font-size: 0.9rem;
+    }
+  
+    button {
+      padding: 12px 20px;
+      font-size: 0.9rem;
+    }
+  
+    .button-group-horizontal {
+      gap: 15px;
+    }
+  }
+  
+  /* Optional: Slightly larger buttons on large screens */
+  @media (min-width: 1024px) {
+    button {
+      padding: 18px 30px;
+      font-size: 1.1rem;
+    }
+  }
+  

@@ -1,0 +1,80 @@
+/* Global reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  /* Login Screen Styling */
+  .login-screen {
+    min-height: 100vh; /* Ensure the container always fills the screen */
+    display: flex;
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally */
+    background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient blue background */
+    color: #fff; /* White text color */
+    padding: 20px; /* Adds padding on mobile */
+  }
+  
+  /* Transparent box containing heading and buttons */
+  .login-box {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    text-align: center; /* Center text inside the box */
+    max-width: 400px; /* Limit box width */
+    width: 100%;
+    backdrop-filter: blur(10px); /* Optional: adds blur to the background behind the box */
+    display: flex;
+    flex-direction: column; /* Stack heading and buttons vertically */
+    align-items: center;
+  }
+  
+  /* Heading inside the box */
+  .login-box h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px; /* Space between heading and buttons */
+    color: #fff; /* Ensure heading text is white */
+  }
+  
+  /* Button styles */
+  .login-box button {
+    width: 80%; /* Button width */
+    max-width: 300px; /* Max width for buttons */
+    padding: 15px 0; /* Padding inside buttons */
+    margin-bottom: 15px; /* Space between buttons */
+    background-color: #007BFF; /* Blue background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 25px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+  }
+  
+  /* Button hover effect */
+  .login-box button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-5px); /* Slightly moves up on hover */
+  }
+  
+  /* Responsive design for mobile */
+  @media (max-width: 768px) {
+    .login-box {
+      padding: 30px;
+    }
+  
+    .login-box h2 {
+      font-size: 1.6rem;
+    }
+  
+    .login-box button {
+      padding: 12px 0;
+      font-size: 1rem;
+    }
+  }
+  

@@ -40,30 +40,31 @@ export const createShift = async (shiftData) => {
   const managerId = localStorage.getItem("manager-id");
   const password = localStorage.getItem("password");
 
+  // Validate credentials
   if (!managerId || !password) {
     throw new Error("Authentication required: Missing credentials.");
   }
 
-  console.log("Headers being sent:", { "manager-id": managerId, password });
-
   try {
+    // Axios POST request with headers
     const response = await axios.post(
       "http://localhost:3000/api/manager/create-shift",
       shiftData,
       {
         headers: {
           "manager-id": managerId,
-          password: password,
+          "password1": password,
         },
       }
     );
 
-    return response.data;
+    return response.data; // Success
   } catch (error) {
-    console.error("Error creating shift:", error.response?.data || error.message);
+    // Throw formatted error
     throw error.response?.data || { error: "Failed to create shift" };
   }
 };
+
 
 
 
@@ -144,9 +145,36 @@ export const viewManagerSchedule = async (managerId, password) => {
 
 export const deleteShift = async (shiftId) => {
   try {
-    const response = await apiClient.delete(`/shifts/delete-shift/${shiftId}`);
+    const managerId = localStorage.getItem("manager-id");
+    const password = localStorage.getItem("password");
+
+    if (!managerId || !password) {
+      throw new Error("Authentication required: Missing credentials.");
+    }
+
+    const response = await axios.delete(
+      `http://localhost:3000/api/manager/delete-shift/${shiftId}`,
+      {
+        headers: {
+          "manager-id": managerId,
+          "password1": password,
+        },
+      }
+    );
+
     return response.data;
   } catch (error) {
-    throw error.response?.data || { error: 'An error occurred while deleting the shift.' };
+    throw error.response?.data || { error: "An error occurred while deleting the shift." };
   }
 };
+
+export const fetchShiftById = async (shiftId) => {
+  try {
+    const response = await axios.get(`/api/shifts/${shiftId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { error: "Error fetching shift." };
+  }
+};
+
+

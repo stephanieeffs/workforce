@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { clockIn, clockOut } from '../api';
-
+import "./Login.css";
 const ClockInOut = () => {
   const [employeeId, setEmployeeId] = useState('');
   const [message, setMessage] = useState('');

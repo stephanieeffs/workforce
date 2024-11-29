@@ -1,0 +1,21 @@
+
+/* Table cell styling */
+td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+/* Styling for alternating row colors */
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Row hover effect */
+tr:hover {
+  background-color: #f1f1f1; /* Light gray on hover */
+}
