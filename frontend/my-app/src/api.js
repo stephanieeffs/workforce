@@ -59,7 +59,7 @@ export const viewShift = async (employeeId, password) => {
   console.log('viewShift called with:' + employeeId + password);
   try {
     const response = await axios.get('http://localhost:3000/api/employee/view-shift', {
-      headers: { 'employee-id': employeeId, 'password': password },
+      params: { 'employee_id': employeeId, 'password': password },
     });
     console.log('Shift response:', response.data);
     return response.data;
@@ -73,7 +73,7 @@ export const viewSchedule = async (employeeId,password) => {
   console.log('viewSchedule called with:', { employeeId });
   try {
     const response = await axios.get('http://localhost:3000/api/employee/view-schedule', {
-      params: { employee_id: employeeId, password: password },
+      headers: { 'employee-id': employeeId, 'password': password },
     });
     console.log('Schedule response:', response.data);
     return response.data.schedule;

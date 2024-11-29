@@ -43,7 +43,7 @@ function Login({ role: initialRole }) {
   
       // Store credentials in localStorage
       if (role === "employee") {
-        localStorage.setItem("employee_id", response.data.user.employee_id);
+        localStorage.setItem("employee-id", response.data.user.employee_id);
         localStorage.setItem("password", password);
       }
   
