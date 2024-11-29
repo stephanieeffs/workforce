@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Login({ role: initialRole }) {
-  const [role, setRole] = useState(initialRole || "employee"); // Default role is employee
-  const [userId, setUserId] = useState(""); // For manager ID or employee ID
-  const [password, setPassword] = useState(""); // Password input
-  const [error, setError] = useState(""); // Error state
-  const [success, setSuccess] = useState(""); // Success state
-
+  const [role, setRole] = useState(initialRole || "employee");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const location = useLocation();
+  const navigate = useNavigate(); // Add navigate hook
 
-  // Update role when navigating directly to the page
   useEffect(() => {
     const path = location.pathname;
     if (path.includes("manager")) {
@@ -21,52 +20,49 @@ function Login({ role: initialRole }) {
     }
   }, [location]);
 
-  const handleIdChange = (e) => {
-    setUserId(e.target.value);
-    setError(""); // Clear any error when typing
-    setSuccess(""); // Clear success when typing
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    setError(""); // Clear any error when typing
-    setSuccess(""); // Clear success when typing
-  };
-
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
-      // Determine the endpoint based on the selected role
       const endpoint =
         role === "manager"
           ? "http://localhost:3000/api/login/manager"
           : "http://localhost:3000/api/login/employee";
-
-      // Payload dynamically includes ID based on the role
+  
       const payload = {
         password,
         [role === "manager" ? "manager_id" : "employee_id"]: userId,
       };
-
-      console.log("Sending login request to:", endpoint);
-      console.log("Payload:", payload);
-
-      // Send login request
+  
       const response = await axios.post(endpoint, payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("Login response received:", response.data);
+  
+      console.log("Login successful:", response.data);
+  
+      // Store credentials in localStorage
+      if (role === "employee") {
+        localStorage.setItem("employee_id", response.data.user.employee_id);
+        localStorage.setItem("password", password);
+      }
+  
       setSuccess(response.data.message || "Login successful");
       setError(""); // Clear any error on success
+  
+      // Navigate based on role
+      if (role === "employee") {
+        navigate("/employee-dashboard"); // Navigate to Employee Dashboard
+      } else if (role === "manager") {
+        navigate("/manager-dashboard"); // Update this when adding Manager Dashboard
+      }
     } catch (err) {
       console.error("Login error response:", err.response || err.message);
       setError(err.response?.data?.error || "Login failed");
       setSuccess(""); // Clear any success on error
     }
   };
+  
 
   return (
     <div className="login-container">
@@ -80,7 +76,7 @@ function Login({ role: initialRole }) {
             type="text"
             id="id"
             value={userId}
-            onChange={handleIdChange}
+            onChange={(e) => setUserId(e.target.value)}
             required
           />
         </div>
@@ -90,7 +86,7 @@ function Login({ role: initialRole }) {
             type="password"
             id="password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>

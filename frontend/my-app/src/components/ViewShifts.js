@@ -9,16 +9,27 @@ function ViewShifts() {
 
   const handleViewShifts = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/shifts/view-shift', {
-        employee_id: employeeId,
-        password,
-      });
-      setShifts(response.data.shifts);
+      const employeeId = localStorage.getItem("employee_id");
+      const password = localStorage.getItem("password");
+  
+      if (!employeeId || !password) {
+        throw new Error("Missing credentials. Please log in again.");
+      }
+  
+      const response = await axios.get(
+        `http://localhost:3000/api/view-shift?employee_id=${employeeId}&password=${password}`
+      );
+  
+      setShifts(response.data); // Assuming response contains the shifts array
+      setError("");
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to fetch shifts');
+      console.error("Error fetching shifts:", err.response?.data || err.message);
+      setError(err.response?.data?.error || "Error fetching shifts");
+      setShifts([]);
     }
   };
-
+  
+  
   return (
     <div>
       <h2>View Shifts</h2>

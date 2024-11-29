@@ -55,6 +55,36 @@ export const editShift = async (shiftId, shiftData) => {
   }
 };
 
+export const viewShift = async (employeeId, password) => {
+  console.log('viewShift called with:' + employeeId + password);
+  try {
+    const response = await axios.get('http://localhost:3000/api/employee/view-shift', {
+      headers: { 'employee-id': employeeId, 'password': password },
+    });
+    console.log('Shift response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Shift error:', error.response?.data || error.message);
+    throw error.response?.data || { error: 'Failed to fetch shifts' };
+  }
+};
+
+export const viewSchedule = async (employeeId,password) => {
+  console.log('viewSchedule called with:', { employeeId });
+  try {
+    const response = await axios.get('http://localhost:3000/api/employee/view-schedule', {
+      params: { employee_id: employeeId, password: password },
+    });
+    console.log('Schedule response:', response.data);
+    return response.data.schedule;
+  } catch (error) {
+    console.error('Schedule error:', error.response?.data || error.message);
+    throw error.response?.data || { error: 'Failed to fetch schedule' };
+  }
+};
+
+
+
 export const deleteShift = async (shiftId) => {
   try {
     const response = await apiClient.delete(`/shifts/delete-shift/${shiftId}`);

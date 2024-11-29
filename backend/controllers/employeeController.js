@@ -42,7 +42,5 @@ exports.clockOut = (req, res) => {
     });
 };
 
-// View shift function for employees
-exports.viewShift = (req, res) => {
-    shiftController.viewShifts(req, res);
-};
+
+

@@ -32,28 +32,39 @@ exports.verifyManagerLogin = (req, res, next) => {
 
 // Middleware function to verify employee login
 exports.verifyEmployeeLogin = (req, res, next) => {
-    const { employee_id, password } = req.body;
+    const employee_id = req.body.employee_id || req.query.employee_id || req.headers['employee-id'];
+    const password = req.body.password || req.query.password || req.headers['password'];
 
     if (!employee_id || !password) {
+        console.log('Missing credentials:', { employee_id, password });
         return res.status(401).json({ error: 'Authentication required: Missing credentials.' });
     }
 
-    // Verify credentials (Example database check)
-    db.query('SELECT * FROM employees WHERE employee_id = ? AND password = ?', [employee_id, password], (err, results) => {
+    db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, results) => {
         if (err) {
+            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error while verifying credentials.' });
         }
 
         if (results.length === 0) {
-            return res.status(403).json({ error: 'Invalid employee credentials.' });
+            console.log('No employee found for ID:', employee_id);
+            return res.status(401).json({ error: 'Invalid credentials.' });
         }
 
-        const user = results[0];
+        const employee = results[0];
 
-        // If credentials are valid, proceed to the next function
+        // Verify password
+        if (employee.password !== password) {
+            console.log('Invalid password for employee:', employee_id);
+            return res.status(401).json({ error: 'Invalid credentials.' });
+        }
+
+        console.log('Employee authenticated:', employee);
+        req.employee = employee;
         next();
     });
 };
+
 
 
 // middleware/authMiddleware.js

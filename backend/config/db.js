@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const db = mysql.createConnection({
     host: 'localhost', // MySQL is running on the local machine
     user: 'root',      // MySQL username 
-    password: '',  // 
+    password: '061502kp',  // 
     database: 'attendance_system' 
 });
 
