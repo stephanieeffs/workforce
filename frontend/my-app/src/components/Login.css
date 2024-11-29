@@ -1,52 +1,96 @@
-
+/* Login Screen Container */
 .login-container {
-    width: 300px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh; /* Ensure the container always fills the screen */
+    display: flex;
+    flex-direction: column; /* Stacks the items vertically */
+    align-items: center; /* Centers content horizontally */
+    justify-content: center; /* Centers content vertically */
+    background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient background */
+    color: #fff;
+    padding: 20px; /* Adds some padding for mobile */
+    text-align: center; /* Centers the text */
 }
 
+/* Form Group */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Space between form elements */
+    width: 100%;
+    max-width: 400px; /* Ensures form doesn't get too wide */
 }
 
+/* Label styling */
 label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
-input, select {
+/* Input and select field styling */
+input[type="text"], input[type="password"] {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
+    margin: 5px 0;
     box-sizing: border-box;
+    border-radius: 25px; 
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: white; 
 }
 
+
+/* Button Styling */
 button {
     width: 100%;
-    padding: 10px;
-    background-color: #007BFF;
+    padding: 15px;
+    background-color: #4CAF50; /* Green button */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px; /* Rounded edges for modern look */
     cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+/* Button hover effect */
 button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Slight shadow on hover */
 }
 
+/* Error and Success Message */
 .error-message {
-    color: #dc3545;
+    color: #dc3545; /* Red */
     font-weight: bold;
     margin-top: 10px;
-  }
-  
-  .success-message {
-    color: #28a745;
+}
+
+.success-message {
+    color: #28a745; /* Green */
     font-weight: bold;
     margin-top: 10px;
-  }
-  
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Adjust form elements on smaller screens */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 1rem;
+    }
+
+    input[type="text"], input[type="password"] {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    button {
+        padding: 12px;
+        font-size: 1rem;
+    }
+}

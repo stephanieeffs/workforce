@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './WelcomeScreenView.css';
 
 function WelcomeScreen() {
   const navigate = useNavigate();

@@ -1,0 +1,93 @@
+/* Main container for employee dashboard */
+.employee-dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100vh;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #00c6ff, #0072ff); 
+    color: rgb(255, 255, 255); 
+  }
+  
+  /* Left section containing buttons and title */
+  .dashboard-left {
+    width: 30%; 
+    padding: 20px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff); 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    color: rgb(255, 255, 255); 
+  }
+  
+  /* Right section for tables */
+  .dashboard-right {
+    width: 65%; 
+    padding: 20px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: black; 
+  }
+  
+  /* Styling for buttons */
+  button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    margin: 10px 0;
+    background-color: #0072ff; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px; /* Set width for consistency */
+  }
+  
+  /* Button hover effect */
+  button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+  
+  /* Table Styling */
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  
+  /* Table header styling */
+  th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    color: black; /* Ensure table text is black */
+  }
+  
+  /* Table header background */
+  th {
+    background-color: #0072ff;
+    color: white; /* Header text remains white */
+  }
+  
+  /* Table rows with all white color */
+  tr {
+    background-color: white; /* Set default row color to white */
+  }
+  
+  /* Darker table row on hover */
+  tr:hover {
+    background-color: #f1f1f1; /* Slightly darker white for hover */
+  }
+  
+  /* Error message */
+  p {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+  

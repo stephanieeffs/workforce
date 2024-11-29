@@ -1,0 +1,94 @@
+/* Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif; /* Clean modern font */
+}
+
+/* Welcome Screen Styling */
+.welcome-screen {
+  min-height: 100vh; /* Ensure the container always fills the screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient background */
+  color: #fff;
+  padding: 20px; /* Adds some padding on mobile */
+}
+
+/* Container for welcome message and buttons */
+.welcome-container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+  max-width: 400px;
+  width: 100%;
+  backdrop-filter: blur(10px); /* Adds a blur effect to background */
+}
+
+/* Main title */
+.welcome-title {
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  font-weight: 600; /* Slightly bolder text */
+}
+
+/* Styling for the button container */
+.welcome-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Wraps buttons on smaller screens */
+}
+
+/* Button styles */
+.button-primary, .button-secondary {
+  padding: 15px 25px;
+  font-size: 1rem;
+  border-radius: 50px; /* Rounded edges for modern look */
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  font-weight: bold;
+  background-color: #4CAF50; /* Green button */
+  color: white;
+}
+
+.button-primary:hover, .button-secondary:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Slight shadow on hover */
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .welcome-container {
+    padding: 30px;
+  }
+
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .button-primary, .button-secondary {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* Adjust button layout */
+  .welcome-buttons {
+    gap: 15px;
+    justify-content: center;
+  }
+}
+
+/* Optional: Slightly larger buttons on large screens */
+@media (min-width: 1024px) {
+  .button-primary, .button-secondary {
+    padding: 18px 30px;
+    font-size: 1.1rem;
+  }
+}

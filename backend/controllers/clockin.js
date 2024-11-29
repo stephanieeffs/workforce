@@ -21,19 +21,8 @@ exports.clockIn = (req, res) => {
         }
 
         if (result.length === 0) {
-            // Optional: Add a new employee if not found (for testing purposes)
-            db.query(
-                'INSERT INTO employees (employee_id, employee_name) VALUES (?, ?)',
-                [employee_id, 'Test Employee'],
-                (insertErr) => {
-                    if (insertErr) {
-                        return res.status(500).json({ error: 'Failed to insert new employee for testing.' });
-                    }
-                    console.log(`Test employee with ID ${employee_id} added to database.`);
-                }
-            );
-
-            return res.status(404).json({ error: 'Employee not found, but test employee has been added.' });
+            
+            return res.status(404).json({ error: 'Employee not found, try again.' });
         }
 
         // Log the clock-in time
