@@ -1,14 +1,26 @@
 const db = require('../config/db'); // Database connection
 
-// Create a shift
 exports.createShift = (req, res) => {
+    const manager_id = req.headers['manager-id'];
+    const password = req.headers['password1'];
     const { employee_id, shift_date, start_time, end_time } = req.body;
 
+    console.log('Headers received:', { manager_id, password });
+    console.log('Body received:', { employee_id, shift_date, start_time, end_time });
+
+    if (!manager_id || !password) {
+        console.log('Authentication failed: Missing credentials');
+        return res.status(401).json({ error: 'Authentication required: Missing credentials.' });
+    }
+
     if (!employee_id || !shift_date || !start_time || !end_time) {
+        console.log('Validation failed: Missing fields');
         return res.status(400).json({ error: 'All fields are required' });
     }
 
+    // Example: Log validation of shift timings
     if (new Date(`1970-01-01T${end_time}`) <= new Date(`1970-01-01T${start_time}`)) {
+        console.log('Validation failed: End time must be after start time');
         return res.status(400).json({ error: 'End time must be after start time' });
     }
 
@@ -25,6 +37,7 @@ exports.createShift = (req, res) => {
         }
 
         if (result.length > 0) {
+            console.log('Validation failed: Shift already exists for this date');
             return res.status(409).json({ error: 'Employee already has a shift on this date' });
         }
 
@@ -38,10 +51,12 @@ exports.createShift = (req, res) => {
                 console.error('Error inserting shift:', err);
                 return res.status(500).json({ error: 'Failed to create shift' });
             }
+            console.log('Shift created successfully:', { employee_id, shift_date, start_time, end_time });
             res.status(201).json({ message: 'Shift created successfully' });
         });
     });
 };
+
 
 // View shifts
 exports.viewShifts = (req, res) => {

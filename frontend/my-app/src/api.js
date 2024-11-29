@@ -36,15 +36,37 @@ export const fetchShifts = async () => {
   }
 };
 
-// Add other API calls (for managers only) as needed
 export const createShift = async (shiftData) => {
+  const managerId = localStorage.getItem("manager-id");
+  const password = localStorage.getItem("password");
+
+  if (!managerId || !password) {
+    throw new Error("Authentication required: Missing credentials.");
+  }
+
+  console.log("Headers being sent:", { "manager-id": managerId, password });
+
   try {
-    const response = await apiClient.post('/shifts/create-shift', shiftData);
+    const response = await axios.post(
+      "http://localhost:3000/api/manager/create-shift",
+      shiftData,
+      {
+        headers: {
+          "manager-id": managerId,
+          password: password,
+        },
+      }
+    );
+
     return response.data;
   } catch (error) {
-    throw error.response?.data || { error: 'An error occurred while creating a shift.' };
+    console.error("Error creating shift:", error.response?.data || error.message);
+    throw error.response?.data || { error: "Failed to create shift" };
   }
 };
+
+
+
 
 export const editShift = async (shiftId, shiftData) => {
   try {
