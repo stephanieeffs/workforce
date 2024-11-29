@@ -8,7 +8,7 @@ function ViewSchedule() {
 
   const handleViewSchedule = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/schedule/view', { employee_id: employeeId });
+      const response = await axios.get('http://localhost:3000/api/employee/view-schedule', { employee_id: employeeId });
       setSchedule(response.data.schedule);
       setMessage(response.data.message);
     } catch (error) {

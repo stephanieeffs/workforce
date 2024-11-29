@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const shiftController = require('../controllers/shiftController');
 const { verifyManagerLogin } = require('../middleware/authMiddleware');
+const { verifyEmployeeLogin } = require('../middleware/authMiddleware');
 console.log(shiftController);
 
 router.post('/create-shift', verifyManagerLogin, shiftController.createShift);// Create a shift 

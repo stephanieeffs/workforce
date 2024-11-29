@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const db = require('../config/db');
 
 
@@ -228,58 +229,49 @@ exports.deleteSchedule = (req, res) => {
     message: "Schedule deleted successfully",
   });
 };
+
 exports.viewSchedule = (req, res) => {
-  const employee_id = req.params.employee_id || req.body.employee_id; // Check both URL and body for employee_id
+    const employee_id = req.headers['employee-id'];
+    const password = req.headers['password'];
+   
+    
 
-  if (!employee_id) {
-    return res.status(400).json({ success: false, message: "Employee ID is required" });
-  }
-
-  // Fetch all shifts for the employee
-  const query = `
-      SELECT shift_date, start_time, end_time 
-      FROM shifts 
-      WHERE employee_id = ? 
-      ORDER BY shift_date, start_time
-  `;
-
-  db.query(query, [employee_id], (err, results) => {
-    if (err) {
-      console.error("Error fetching schedule:", err);
-      return res.status(500).json({ success: false, message: "Failed to fetch schedule" });
+    if (!employee_id || !password) {
+        return res.status(401).json({ error: "Authentication failed: Missing credentials" });
     }
 
-    // Create the default structure for all days of the week
-    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const schedule = daysOfWeek.map(day => ({
-      day,
-      shifts: [],
-    }));
+    db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, results) => {
+        if (err || results.length === 0 || results[0].password !== password) {
+            return res.status(401).json({ error: "Authentication failed" });
+        }
 
-    // Populate the schedule with shifts
-    results.forEach(shift => {
-      const shiftDate = new Date(shift.shift_date);
-      const dayOfWeek = shiftDate.toLocaleString("en-US", { weekday: "long" });
+        const query = `
+            SELECT shift_date, start_time, end_time
+            FROM shifts
+            WHERE employee_id = ?
+            ORDER BY shift_date, start_time
+        `;
 
-      // Find the corresponding day in the schedule
-      const dayEntry = schedule.find(entry => entry.day === dayOfWeek);
-      if (dayEntry) {
-        dayEntry.shifts.push({
-          date: shiftDate.toLocaleDateString("en-US"),
-          start_time: shift.start_time,
-          end_time: shift.end_time,
+        db.query(query, [employee_id], (err, shifts) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to fetch schedule" });
+            }
+
+            if (shifts.length === 0) {
+                return res.status(404).json({ error: "No schedule found" });
+            }
+
+            res.status(200).json({
+                success: true,
+                schedule: shifts,
+            });
         });
-      }
     });
-
-    // Response with formatted schedule
-    res.status(200).json({
-      success: true,
-      message: `Shifts for the week for Employee ID ${employee_id}`,
-      schedule,
-    });
-  });
 };
+
+
+
+
 
 
 

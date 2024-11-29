@@ -48,7 +48,7 @@ app.use('/api', clockInRoutes);
 app.use('/api/shifts', shiftRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/manager', managerRoutes);
-app.use('/api',employeeRoutes);
+app.use('/api/employee',employeeRoutes);
 app.use('/api', loginRoutes);
 
 
