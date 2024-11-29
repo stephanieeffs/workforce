@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const managerController = require('../controllers/managerController');
 const shiftController = require('../controllers/shiftController');
+const scheduleController = require('../controllers/scheduleController');
 const { verifyManagerLogin } = require('../middleware/authMiddleware');
 const { ensureAuthenticated } = require('../middleware/authMiddleware');
 console.log(managerController);
@@ -30,6 +31,8 @@ router.put('/adjust-clockinout', verifyManagerLogin, managerController.adjustClo
 router.post('/create-shift', verifyManagerLogin, managerController.createShift); // Create a new shift
 router.put('/edit-shift/:shift_id', verifyManagerLogin, managerController.editShift); // Edit a shift by ID
 router.delete('/delete-shift/:shift_id', verifyManagerLogin, managerController.deleteShift); // Delete a shift by ID
+router.get('/view-shift', verifyManagerLogin, shiftController.viewShifts);
+router.get('/view-schedule', verifyManagerLogin, scheduleController.viewSchedule);
 
 // Manage Shifts (General operations, Requires Manager Login)
 router.post('/manage-shift', verifyManagerLogin, managerController.manageShift);

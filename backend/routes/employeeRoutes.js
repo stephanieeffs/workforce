@@ -14,4 +14,5 @@ router.post('/clock-out', verifyEmployeeLogin, employeeController.clockOut);
 router.get('/view-shift', verifyEmployeeLogin, shiftController.viewShifts);
 router.get('/view-schedule', verifyEmployeeLogin, scheduleController.viewSchedule);
 
+
 module.exports = router;

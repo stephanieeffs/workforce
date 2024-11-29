@@ -45,51 +45,81 @@ exports.createShift = (req, res) => {
 
 // View shifts
 exports.viewShifts = (req, res) => {
-    const { employee_id, password } = req.query;
-    console.log("Check" + employee_id + password) // Use query for GET request parameters
+    const employee_id = req.query.employee_id || req.body.employee_id || req.headers['employee-id'];
+    const password = req.query.password || req.body.password || req.headers['password'];
+    const manager_id = req.query.manager_id || req.body.manager_id || req.headers['manager-id'];
+    console.log('Request Query:', req.query);
+    console.log('Request Body:', req.body);
+    console.log('Request Headers:', req.headers);
 
-    if (!employee_id || !password) {
-        return res.status(400).json({ error: 'Employee ID and password are required' });
+
+
+    console.log('Employee ID:', employee_id);
+    console.log('Manager ID:', manager_id);
+    console.log('Password:', password);
+
+    if (!employee_id && !manager_id) {
+        return res.status(400).json({ error: 'Employee ID or Manager ID is required' });
     }
 
-    db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database query failed' });
-        }
+    if (!password && !manager_id) {
+        return res.status(400).json({ error: 'Password or Manager ID is required' });
+    }
 
-        if (result.length === 0) {
-            return res.status(404).json({ error: 'Employee not found' });
-        }
-
-        const employee = result[0];
-        if (employee.password !== password) {
-            return res.status(401).json({ error: 'Incorrect password' });
-        }
-
-        const query = 'SELECT * FROM shifts WHERE employee_id = ?';
-        db.query(query, [employee_id], (err, results) => {
+    if (employee_id && password) {
+        // Employee-specific shifts
+        db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, result) => {
             if (err) {
-                return res.status(500).json({ error: 'Failed to fetch shifts' });
+                return res.status(500).json({ error: 'Database query failed' });
             }
-
-            const formattedShifts = results.map((shift) => {
-                const shiftDate = new Date(shift.shift_date);
-                const dayOfWeek = shiftDate.toLocaleString('en-US', { weekday: 'long' });
-
-                return {
+            if (result.length === 0) {
+                return res.status(404).json({ error: 'Employee not found' });
+            }
+            const employee = result[0];
+            if (employee.password !== password) {
+                return res.status(401).json({ error: 'Incorrect password' });
+            }
+            db.query('SELECT * FROM shifts WHERE employee_id = ?', [employee_id], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to fetch shifts' });
+                }
+                const formattedShifts = results.map(shift => ({
                     ...shift,
-                    day_of_week: dayOfWeek,
-                    formatted_date: shiftDate.toLocaleDateString('en-US'),
-                };
-            });
-
-            res.status(200).json({
-                message: 'Shifts retrieved successfully',
-                shifts: formattedShifts,
+                    day_of_week: new Date(shift.shift_date).toLocaleString('en-US', { weekday: 'long' }),
+                    formatted_date: new Date(shift.shift_date).toLocaleDateString('en-US'),
+                }));
+                res.status(200).json({ message: 'Shifts retrieved successfully', shifts: formattedShifts });
             });
         });
-    });
+    } else if (manager_id) {
+        // Manager-specific shifts
+        db.query('SELECT * FROM managers WHERE manager_id = ?', [manager_id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database query failed' });
+            }
+            if (result.length === 0) {
+                return res.status(404).json({ error: 'Manager not found' });
+            }
+
+            // Fetch shifts assigned to the manager
+            db.query('SELECT * FROM shifts WHERE manager_id = ?', [manager_id], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to fetch shifts' });
+                }
+
+                const formattedShifts = results.map(shift => ({
+                    ...shift,
+                    day_of_week: new Date(shift.shift_date).toLocaleString('en-US', { weekday: 'long' }),
+                    formatted_date: new Date(shift.shift_date).toLocaleDateString('en-US'),
+                }));
+
+                res.status(200).json({ message: 'Shifts retrieved successfully', shifts: formattedShifts });
+            });
+        });
+    }
 };
+
+
 
 // Delete a shift
 exports.deleteShift = (req, res) => {

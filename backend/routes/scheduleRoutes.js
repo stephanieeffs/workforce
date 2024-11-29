@@ -6,7 +6,7 @@ const { verifyManagerLogin, verifyEmployeeLogin } = require('../middleware/authM
 console.log(scheduleController);
 
 // Define routes
-router.get("/view-all-schedules", verifyManagerLogin, scheduleController.getAllSchedules); // For managers
+router.get("/get-all-schedules", verifyManagerLogin, scheduleController.getAllSchedules); // For managers
 router.get("/view-schedule",  scheduleController.viewSchedule); // For employees
 router.post("/create-schedule", verifyManagerLogin, scheduleController.createSchedule); // For managers
 router.put("/edit-schedule/:id", verifyManagerLogin, scheduleController.editSchedule); // For managers

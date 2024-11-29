@@ -229,45 +229,80 @@ exports.deleteSchedule = (req, res) => {
     message: "Schedule deleted successfully",
   });
 };
-
 exports.viewSchedule = (req, res) => {
-    const employee_id = req.headers['employee-id'];
-    const password = req.headers['password'];
-   
-    
+  const employee_id = req.query.employee_id || req.body.employee_id || req.headers['employee-id'];
+  const password = req.query.password || req.body.password || req.headers['password'];
+  const manager_id = req.query.manager_id || req.body.manager_id || req.headers['manager-id'];
 
-    if (!employee_id || !password) {
-        return res.status(401).json({ error: "Authentication failed: Missing credentials" });
-    }
+  console.log('Request Query:', req.query);
+  console.log('Request Body:', req.body);
+  console.log('Request Headers:', req.headers);
 
-    db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, results) => {
-        if (err || results.length === 0 || results[0].password !== password) {
-            return res.status(401).json({ error: "Authentication failed" });
-        }
+  console.log('Employee ID:', employee_id);
+  console.log('Manager ID:', manager_id);
+  console.log('Password:', password);
 
-        const query = `
-            SELECT shift_date, start_time, end_time
-            FROM shifts
-            WHERE employee_id = ?
-            ORDER BY shift_date, start_time
-        `;
+  if (!employee_id && !manager_id) {
+      return res.status(400).json({ error: 'Employee ID or Manager ID is required' });
+  }
 
-        db.query(query, [employee_id], (err, shifts) => {
-            if (err) {
-                return res.status(500).json({ error: "Failed to fetch schedule" });
-            }
+  if (!password && !manager_id) {
+      return res.status(400).json({ error: 'Password or Manager ID is required' });
+  }
 
-            if (shifts.length === 0) {
-                return res.status(404).json({ error: "No schedule found" });
-            }
+  if (employee_id && password) {
+      // Employee-specific schedule
+      db.query('SELECT * FROM employees WHERE employee_id = ?', [employee_id], (err, result) => {
+          if (err) {
+              return res.status(500).json({ error: 'Database query failed' });
+          }
+          if (result.length === 0) {
+              return res.status(404).json({ error: 'Employee not found' });
+          }
+          const employee = result[0];
+          if (employee.password !== password) {
+              return res.status(401).json({ error: 'Incorrect password' });
+          }
+          db.query('SELECT * FROM shifts WHERE employee_id = ? ORDER BY shift_date, start_time', [employee_id], (err, results) => {
+              if (err) {
+                  return res.status(500).json({ error: 'Failed to fetch schedule' });
+              }
+              const formattedSchedule = results.map(shift => ({
+                  ...shift,
+                  day_of_week: new Date(shift.shift_date).toLocaleString('en-US', { weekday: 'long' }),
+                  formatted_date: new Date(shift.shift_date).toLocaleDateString('en-US'),
+              }));
+              res.status(200).json({ message: 'Schedule retrieved successfully', schedule: formattedSchedule });
+          });
+      });
+  } else if (manager_id) {
+      // Manager-specific schedule
+      db.query('SELECT * FROM managers WHERE manager_id = ?', [manager_id], (err, result) => {
+          if (err) {
+              return res.status(500).json({ error: 'Database query failed' });
+          }
+          if (result.length === 0) {
+              return res.status(404).json({ error: 'Manager not found' });
+          }
 
-            res.status(200).json({
-                success: true,
-                schedule: shifts,
-            });
-        });
-    });
+          // Fetch schedule assigned to the manager
+          db.query('SELECT * FROM shifts WHERE manager_id = ? ORDER BY shift_date, start_time', [manager_id], (err, results) => {
+              if (err) {
+                  return res.status(500).json({ error: 'Failed to fetch schedule' });
+              }
+
+              const formattedSchedule = results.map(shift => ({
+                  ...shift,
+                  day_of_week: new Date(shift.shift_date).toLocaleString('en-US', { weekday: 'long' }),
+                  formatted_date: new Date(shift.shift_date).toLocaleDateString('en-US'),
+              }));
+
+              res.status(200).json({ message: 'Schedule retrieved successfully', schedule: formattedSchedule });
+          });
+      });
+  }
 };
+
 
 
 
