@@ -38,34 +38,13 @@ const EmployeeDashboard = () => {
       }
   
       const data = await viewSchedule(employeeId, password);
-      console.log("Schedule response:", data);
-      setSchedule(data);
   
-      // Ensure data.schedule exists and is an array
-      if (!data?.schedule || !Array.isArray(data.schedule)) {
+      if (!Array.isArray(data) || data.length === 0) {
         throw new Error("Invalid schedule data");
       }
   
-      // Group by date
-      const groupedSchedule = data.schedule.reduce((acc, shift) => {
-        const shiftDate = new Date(shift.shift_date).toLocaleDateString("en-US");
-        if (!acc[shiftDate]) acc[shiftDate] = [];
-        acc[shiftDate].push({
-          start_time: shift.start_time,
-          end_time: shift.end_time,
-        });
-        return acc;
-      }, {});
-  
-      // Convert groupedSchedule into an array for rendering
-      const formattedSchedule = Object.entries(groupedSchedule).map(
-        ([date, shifts]) => ({
-          date,
-          shifts,
-        })
-      );
-  
-      setSchedule(formattedSchedule);
+      console.log("Schedule fetched:", data);
+      setSchedule(data);
       setError("");
     } catch (err) {
       console.error("Error fetching schedule:", err);
@@ -73,6 +52,7 @@ const EmployeeDashboard = () => {
       setSchedule([]);
     }
   };
+  
   
   
 
@@ -116,26 +96,21 @@ const EmployeeDashboard = () => {
     <thead>
       <tr>
         <th>Shift Date</th>
-        <th>Shifts</th>
+        <th>Start Time</th>
+        <th>End Time</th>
       </tr>
     </thead>
     <tbody>
-      {schedule.map((dayEntry, index) => (
+      {schedule.map((shift, index) => (
         <tr key={index}>
-          <td>{dayEntry.date}</td>
-          <td>
-            {dayEntry.shifts.map((shift, i) => (
-              <div key={i}>
-                {shift.start_time} - {shift.end_time}
-              </div>
-            ))}
-          </td>
+          <td>{new Date(shift.shift_date).toLocaleDateString()}</td>
+          <td>{shift.start_time}</td>
+          <td>{shift.end_time}</td>
         </tr>
       ))}
     </tbody>
   </table>
 )}
-
     </div>
   );
 };

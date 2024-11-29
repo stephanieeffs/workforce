@@ -46,6 +46,11 @@ function Login({ role: initialRole }) {
         localStorage.setItem("employee-id", response.data.user.employee_id);
         localStorage.setItem("password", password);
       }
+
+      if(role === 'manager'){
+        localStorage.setItem("manager-id",response.data.user.manager_id);
+        localStorage.setItem("password",password);
+      }
   
       setSuccess(response.data.message || "Login successful");
       setError(""); // Clear any error on success

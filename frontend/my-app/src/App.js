@@ -14,6 +14,7 @@ import ViewAllSchedules from './components/ViewAllSchedules';
 import ViewSchedule from './components/ViewSchedule';
 import ViewShifts from './components/ViewShifts';
 import EmployeeDashboard from './components/EmployeeDashboard';
+import ManagerDashboard from './components/ManagerDashboard';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           {/* Route to view shifts */}
           <Route path="/view-shifts" element={<ViewShifts />} />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="/manager-dashboard" element={<ManagerDashboard />} />
         </Routes>
       </div>
     </Router>

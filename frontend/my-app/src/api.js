@@ -69,6 +69,25 @@ export const viewShift = async (employeeId, password) => {
   }
 };
 
+export const viewManagerShift = async (managerId, password) => {
+  console.log("viewManagerShift called with:", { managerId, password });
+
+  try {
+      const response = await axios.get("http://localhost:3000/api/manager/view-shift", {
+          params: { manager_id: managerId, password },
+      });
+
+      console.log("Manager Shift response:", response.data);
+      return response.data;
+  } catch (error) {
+      console.error("Manager Shift error:", error.response?.data || error.message);
+      throw error.response?.data || { error: "Failed to fetch manager shifts" };
+  }
+};
+
+
+
+
 export const viewSchedule = async (employeeId,password) => {
   console.log('viewSchedule called with:', { employeeId });
   try {
@@ -80,6 +99,22 @@ export const viewSchedule = async (employeeId,password) => {
   } catch (error) {
     console.error('Schedule error:', error.response?.data || error.message);
     throw error.response?.data || { error: 'Failed to fetch schedule' };
+  }
+};
+
+export const viewManagerSchedule = async (managerId, password) => {
+  console.log('viewManagerSchedule called with:', { managerId, password });
+
+  try {
+    const response = await axios.get('http://localhost:3000/api/manager/view-schedule', {
+      params: { 'manager_id': managerId, 'password': password },
+    });
+
+    console.log('Manager Schedule response:', response.data);
+    return response.data.schedule;
+  } catch (error) {
+    console.error('Manager Schedule error:', error.response?.data || error.message);
+    throw error.response?.data || { error: 'Failed to fetch manager schedule' };
   }
 };
 
