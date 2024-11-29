@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { clockIn, clockOut } from '../api';
-import './ClockInOutView.css';
 
 const ClockInOut = () => {
   const [employeeId, setEmployeeId] = useState('');
@@ -35,22 +34,20 @@ const ClockInOut = () => {
   };
 
   return (
-    <div className="clock-in-out-screen">
-      <div className="clock-container">
-        <h1>Clock In or Out</h1>
-        <input
-          type="text"
-          placeholder="Enter Employee ID"
-          value={employeeId}
-          onChange={(e) => setEmployeeId(e.target.value)}
-        />
-        <div className="button-group-horizontal">
-          <button onClick={handleClockIn}>Clock In</button>
-          <button onClick={handleClockOut}>Clock Out</button>
-        </div>
-        <p className={`response-message ${messageType}`}>{message}</p>
-        {duration && <p className="response-message success">Duration: {duration}</p>}
+    <div>
+      <h1>Clock In/Out</h1>
+      <input
+        type="text"
+        placeholder="Enter Employee ID"
+        value={employeeId}
+        onChange={(e) => setEmployeeId(e.target.value)}
+      />
+      <div className="button-group-horiaontal">
+        <button onClick={handleClockIn}>Clock In</button>
+        <button onClick={handleClockOut}>Clock Out</button>
       </div>
+      <p className={`response-message ${messageType}`}>{message}</p>
+      {duration && <p className="response-message success">Duration: {duration}</p>}
     </div>
   );
 };

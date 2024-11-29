@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Login.css';
 
 function Login({ role: initialRole }) {
   const [role, setRole] = useState(initialRole || "employee");

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { viewShift, viewSchedule } from "../api"; 
-import './EmployeeDashboardView.css';
-
+import { viewShift, viewSchedule } from "../api"; // Import API functions
 
 const EmployeeDashboard = () => {
   const [shifts, setShifts] = useState([]);
@@ -77,72 +75,69 @@ const EmployeeDashboard = () => {
   };
   
   
+
+  
+  
+
   return (
-    <div className="employee-dashboard-container">
-      <div className="dashboard-left">
-        <h1>Employee Dashboard</h1>
-        <div className="button-container">
-          <button onClick={handleViewShifts}>View Shifts</button>
-          <button onClick={handleViewSchedule}>View Schedule</button>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </div>
-  
-      <div className="dashboard-right">
-        {shifts?.length > 0 && (
-          <table border="1" className="shift-table">
-            <thead>
-              <tr>
-                <th>Shift Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
+    <div>
+      <h1>Employee Dashboard</h1>
+      <button onClick={handleViewShifts}>View Shifts</button>
+      <button onClick={handleViewSchedule}>View Schedule</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {shifts?.length > 0 && (
+        <table border="1" style={{ margin: "20px auto", width: "80%" }}>
+          <thead>
+            <tr>
+              <th>Shift Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shifts.map((shift, index) => (
+              <tr key={index}>
+                <td>
+                  {shift.formatted_date && shift.day_of_week
+                    ? `${shift.formatted_date} (${shift.day_of_week})`
+                    : "Date not available"}
+                </td>
+                <td>{shift.start_time || "Start time not available"}</td>
+                <td>{shift.end_time || "End time not available"}</td>
               </tr>
-            </thead>
-            <tbody>
-              {shifts.map((shift, index) => (
-                <tr key={index}>
-                  <td>
-                    {shift.formatted_date && shift.day_of_week
-                      ? `${shift.formatted_date} (${shift.day_of_week})`
-                      : "Date not available"}
-                  </td>
-                  <td>{shift.start_time || "Start time not available"}</td>
-                  <td>{shift.end_time || "End time not available"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-  
-        {schedule?.length > 0 && (
-          <table border="1" className="schedule-table">
-            <thead>
-              <tr>
-                <th>Shift Date</th>
-                <th>Shifts</th>
-              </tr>
-            </thead>
-            <tbody>
-              {schedule.map((dayEntry, index) => (
-                <tr key={index}>
-                  <td>{dayEntry.date}</td>
-                  <td>
-                    {dayEntry.shifts.map((shift, i) => (
-                      <div key={i}>
-                        {shift.start_time} - {shift.end_time}
-                      </div>
-                    ))}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+{schedule?.length > 0 && (
+  <table border="1" style={{ margin: "20px auto", width: "80%" }}>
+    <thead>
+      <tr>
+        <th>Shift Date</th>
+        <th>Shifts</th>
+      </tr>
+    </thead>
+    <tbody>
+      {schedule.map((dayEntry, index) => (
+        <tr key={index}>
+          <td>{dayEntry.date}</td>
+          <td>
+            {dayEntry.shifts.map((shift, i) => (
+              <div key={i}>
+                {shift.start_time} - {shift.end_time}
+              </div>
+            ))}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
+
     </div>
   );
-  
-  
 };
 
 export default EmployeeDashboard;
